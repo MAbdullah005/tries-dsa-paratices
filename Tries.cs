@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 namespace Triesdsa
 {
@@ -38,6 +38,7 @@ namespace Triesdsa
                 return node[va];
             }
         }
+        public int num = 0;
         private Node root = new Node(' ');
         public void insert(string val)
         {
@@ -50,6 +51,7 @@ namespace Triesdsa
                 }
                 current = current.node[item];
             }
+            num++;
             current.isendofword = true;
         }
         public void Preorder()
@@ -88,19 +90,26 @@ namespace Triesdsa
             {
                 return false;
             }
-             return contai_recursive(root,ch);
+             return contai_recursive(root,ch,0);
         }
-        private bool contai_recursive(Node root,string ch)
+        private bool contai_recursive(Node root,string ch,int index)
         {
-            foreach(var item in ch)
+            if (index == ch.Length)
             {
-                if(!root.node.ContainsKey(item))
-                {
-                    return false;
-                }
-                contai_recursive(root.node[item],ch);
+                Console.WriteLine("fouud word "+ch);
+                return true;
             }
-            return true;
+            if (!root.node.ContainsKey(ch[index]))
+              {
+                Console.WriteLine("found word ");
+               for(int i = 0;i<index;i++)
+                {
+                    Console.Write(ch[i]+" ");
+                }
+                    return false;
+                       
+              }
+            return contai_recursive(root.node[ch[index]],ch,index+1);
         }
         public void revmove(string word)
         {
@@ -143,6 +152,7 @@ namespace Triesdsa
                     previos.node.Remove(item.value);
                 }
             }
+            num--;
         }
         public void revove_mosh(string word)
         {
@@ -233,6 +243,23 @@ namespace Triesdsa
             }
             return current;
         }
+        public int count_word()
+        {
+            return count_word(root, 0);
+        }
+        private int count_word(Node root,int count)
+        {
+            foreach(var item in root.getchildren())
+            {
+                if (item.isendofword)
+                {
+                    count++;
+                    Console.WriteLine("done"+count);
+                }
+                count=+ count_word(item, count);
+            }
+            return count;
+        }
     }
     public class Program
     {
@@ -244,12 +271,11 @@ namespace Triesdsa
             tries.insert("card");
             tries.insert("carefull");
             tries.insert("egg");
-            Console.WriteLine(tries.contain("car"));
-            Console.WriteLine(tries.contai_recursive("car"));
+            tries.insert("eggs");
+            Console.WriteLine("number of word "+tries.count_word());
+            tries.revmove("egg");
+           Console.WriteLine("number of word "+tries.count_word());
         }
 
     }
 }
-
-
-
